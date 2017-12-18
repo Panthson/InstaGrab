@@ -1,5 +1,9 @@
 # import libraries
+import json
+import unicodedata
 import urllib
+import sys
+
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
@@ -13,7 +17,10 @@ def getData(url):
         return
     return data
 
-def main():
+def removeEmojis(string):
+    print(string.find("\u"))
+
+def getURLs():
     # find user
     user = input("What user do you want to search? ")
     print("Searching for user " + "\"" + user + "\"" + ".");
@@ -23,13 +30,20 @@ def main():
     data = getData(userURL)
     if data is None:
         return
+
     soup = BeautifulSoup(data, "html.parser")
-    HDURL = soup.find_all("script", attrs={"type": "text/javascript"})[2]
-    print(HDURL)
+
+    #Get JSON object from HTML
+    JSONHTML = soup.find_all("script", attrs={"type": "text/javascript"})[2]
+    JSONHTML = str(JSONHTML)
+    JSONHTML = JSONHTML.replace("<script type=\"text/javascript\">window._sharedData = ", "")
+    JSONHTML = JSONHTML.replace(";</script>", "")
+    JSONHTML = removeEmojis(JSONHTML) #Removed Unicode Characters
+    print(JSONHTML)
+
+    #print(JSONHTML)
+    JSONObj = json.loads(JSONHTML)
+    #print(JSONObj)
 
 
-
-
-
-
-main()
+getURLs()
