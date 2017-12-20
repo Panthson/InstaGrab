@@ -2,8 +2,6 @@
 import json
 import unicodedata
 import urllib
-import sys
-
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
@@ -11,26 +9,18 @@ def getData(url):
     try:
         data = urlopen(url)
     except urllib.error.HTTPError as e:
-        print("Errored!")
-        if e.code == 404:
-            print("User not found!")
         return
     return data
 
-def removeEmojis(string):
-    print(string.find("\u"))
-
-def getURLs():
+def getURLs(user):
     # find user
-    user = input("What user do you want to search? ")
-    print("Searching for user " + "\"" + user + "\"" + ".");
     userURL = "https://www.instagram.com/" + user
-    print("Link generated \"" + userURL + "\"")
 
     data = getData(userURL)
     if data is None:
-        return
-
+        data = invalidUserInput(data)
+        if data is None:
+            return
     soup = BeautifulSoup(data, "html.parser")
 
     #Get JSON object from HTML
@@ -38,12 +28,39 @@ def getURLs():
     JSONHTML = str(JSONHTML)
     JSONHTML = JSONHTML.replace("<script type=\"text/javascript\">window._sharedData = ", "")
     JSONHTML = JSONHTML.replace(";</script>", "")
-    JSONHTML = removeEmojis(JSONHTML) #Removed Unicode Characters
-    print(JSONHTML)
 
-    #print(JSONHTML)
     JSONObj = json.loads(JSONHTML)
-    #print(JSONObj)
+    for i in JSONObj["entry_data"]["ProfilePage"][0]["user"]["media"]["nodes"]:
+        print(i)
+    print(len(JSONObj["entry_data"]["ProfilePage"][0]["user"]["media"]["nodes"]))
+    return "Not found yet"
 
+def invalidUserInput(data):
+    while data is None:
+        print("User not found!")
+        check = input("Would you like to search again? (y/n) ")
+        while check is not "y" and check is not "n":
+            print("Invalid input.")
+            check = input("Would you like to search again? (y/n) ")
+            if check is "y":
+                user = input("What user do you want to search? ")
+                userURL = "https://www.instagram.com/" + user
+                data = getData(userURL)
+                return data
+            if check is "n":
+                return
+        if check is "y":
+            user = input("What user do you want to search? ")
+            userURL = "https://www.instagram.com/" + user
+            data = getData(userURL)
+            return data
+        if check is "n":
+            return
 
-getURLs()
+def userIsEmpty(user):
+    if len(user) is 0:
+        return True;
+    for i in user:
+        if i is not " ":
+            return False
+    return True
