@@ -1,7 +1,5 @@
 import InstaGui as gui
 
-def main():
-    gui.createApplication()
+#def main():
 
-if __name__ == '__main__':
-    main()
+#if __name__ == '__main__':

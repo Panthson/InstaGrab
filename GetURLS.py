@@ -2,6 +2,7 @@
 import json
 import urllib
 import DownloadPictures as dp
+import InstaGui as gui
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
@@ -12,9 +13,8 @@ def getData(url):
         return
     return data
 
-def getURLs():
+def getURLs(user):
     # find user
-    user = "panthson"
     userURL = "https://www.instagram.com/" + user
 
     data = getData(userURL)
@@ -35,10 +35,10 @@ def getURLs():
     #     print(i)
     # print(len(JSONObj["entry_data"]["ProfilePage"][0]["user"]["media"]["nodes"]))
     # print("Not found yet")
-    urls = ["facebook.com", "instagram.com"]
+    urls = [userURL, str(soup)]
     dp.createURLFile(urls)
 
-def invalidUserInput(data):
+def invalidUserInput(data): #TODO POSSIBLY DELET
     while data is None:
         print("User not found!")
         check = input("Would you like to search again? (y/n) ")
