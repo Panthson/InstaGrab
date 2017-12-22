@@ -1,7 +1,7 @@
 # import libraries
 import json
-import unicodedata
 import urllib
+import DownloadPictures as dp
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
@@ -12,8 +12,9 @@ def getData(url):
         return
     return data
 
-def getURLs(user):
+def getURLs():
     # find user
+    user = "panthson"
     userURL = "https://www.instagram.com/" + user
 
     data = getData(userURL)
@@ -30,10 +31,12 @@ def getURLs(user):
     JSONHTML = JSONHTML.replace(";</script>", "")
 
     JSONObj = json.loads(JSONHTML)
-    for i in JSONObj["entry_data"]["ProfilePage"][0]["user"]["media"]["nodes"]:
-        print(i)
-    print(len(JSONObj["entry_data"]["ProfilePage"][0]["user"]["media"]["nodes"]))
-    return "Not found yet"
+    # for i in JSONObj["entry_data"]["ProfilePage"][0]["user"]["media"]["nodes"]:
+    #     print(i)
+    # print(len(JSONObj["entry_data"]["ProfilePage"][0]["user"]["media"]["nodes"]))
+    # print("Not found yet")
+    urls = ["facebook.com", "instagram.com"]
+    dp.createURLFile(urls)
 
 def invalidUserInput(data):
     while data is None:
